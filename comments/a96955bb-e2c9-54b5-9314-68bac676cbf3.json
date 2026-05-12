@@ -10,5 +10,6 @@
     "fullText": "I have a concern about the type of documentation that will be required to be provided to the carrier. Will I be required to show them my contract with the shipper? If the shipper sends me a load to move based on the contract what do I show the carrier? if the shipper sends me an email to move a load, is the email sufficient? I receive many emails where the sender does not have a good signature they just sign it from Bob. so a copy of the email from Bob is acceptable?"
   },
   "sentiment": "",
-  "source_label": "human"
+  "source_label": "human",
+  "policy_id": "FMCSA-2023-0257"
 }

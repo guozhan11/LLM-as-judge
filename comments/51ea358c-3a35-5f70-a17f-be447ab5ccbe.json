@@ -10,5 +10,6 @@
     "fullText": "Driver/dispatchers should have the rights to know that how much is customer paying the broker to haul their load and how much is broker keeping and giving the driver."
   },
   "sentiment": "",
-  "source_label": "human"
+  "source_label": "human",
+  "policy_id": "FMCSA-2023-0257"
 }

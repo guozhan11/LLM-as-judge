@@ -10,5 +10,6 @@
     "fullText": "This proposed FMCSA rule is important because it reinforces transparency in brokered freight transactions, ensuring carriers can access vital records about their deals. <br/><br/>However, to truly protect small carriers, these records should be automatically included in rate confirmations. Without automatic sharing, brokers might retaliate by blacklisting carriers who request the information&mdash;ultimately hurting small businesses that rely on fair and open dealings like myself."
   },
   "sentiment": "",
-  "source_label": "human"
+  "source_label": "human",
+  "policy_id": "FMCSA-2023-0257"
 }
