@@ -10,6 +10,8 @@ comments (and the 633 AI comments) and writes them to separate files (the origin
   ai_same_day    - Statt and Gemini comments rescored with their original inputs, so every source in the
                    comparison is scored in the same run (the evaluator drifted between runs)
 
+Round 2 human comments (the ~3,000 downloaded CSV comments) are also rescored under agency_only.
+
 Usage: python rescore_context_sensitivity.py
 """
 import json
@@ -139,6 +141,12 @@ def main():
         jobs.append((row.file, "agency_only", text, agency, None))
         jobs.append((row.file, "full_context", text, row.policy_id, contexts.get(row.policy_id, "")))
 
+    round2_human = scores[
+        scores["source_label"].str.lower().eq("human") & scores["file"].str.startswith("csv:", na=False)
+    ]
+    for row in round2_human.itertuples():
+        jobs.append((row.file, "agency_only", raw_text[row.file], row.policy_id.split("-")[0].upper(), None))
+
     ai_rows = scores[scores["source_label"].str.lower().isin(["statt", "gemini"])]
     for row in ai_rows.itertuples():
         text = raw_text[row.file]
@@ -151,7 +159,7 @@ def main():
             if "scores" in rec:
                 done.add((rec["file"], rec["condition"]))
     jobs = [j for j in jobs if (j[0], j[1]) not in done]
-    print(f"{len(round1_human)} Round 1 human + {len(ai_rows)} AI comments; {len(jobs)} evaluations to run")
+    print(f"{len(round1_human)} Round 1 human + {len(round2_human)} Round 2 human + {len(ai_rows)} AI comments; {len(jobs)} evaluations to run")
 
     def run(job):
         file, condition, text, policy_id, context = job
@@ -175,7 +183,7 @@ def main():
             except Exception as exc:
                 failures += 1
                 print("FAILED", futures[future][:2], exc)
-            if i % 50 == 0:
+            if i % 250 == 0:
                 print(f"{i}/{len(jobs)} done")
     print(f"finished; failures: {failures}")
 
