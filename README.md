@@ -108,6 +108,7 @@ CAP_SOURCE_LABELS = None
 
 ## Analysis
 - `comment_analysis.ipynb` compares scores by `source_label` and runs BERTopic per rationale field.
+- The "Topic Modeling v2" section is the recommended topic analysis. Human, Statt, and Gemini comments cover different dockets, so the earlier document-level topics mostly separate dockets. v2 splits evaluator rationales into clauses, masks docket-specific words, separates praise from criticism, fits BERTopic on the agency-balanced Round 1 sample, and writes `images/topic_modeling_evaluator_themes.png`.
 - It expects `comment_scores.csv` and `comment_scores.jsonl` in this folder.
 - The analysis notebook infers missing `policy_id` values (especially for human labels) using docket ID patterns.
 
