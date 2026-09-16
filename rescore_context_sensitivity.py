@@ -9,6 +9,8 @@ comments (and the 633 AI comments) and writes them to separate files (the origin
   full_context   - original setup, rerun as a test-retest control for evaluator noise
   ai_same_day    - Statt and Gemini comments rescored with their original inputs, so every source in the
                    comparison is scored in the same run (the evaluator drifted between runs)
+  ai_agency_only - Statt and Gemini comments rescored with only the agency name from their source file
+                   (the original Statt inputs sometimes carried a docket-like ID taken from the letter)
 
 Round 2 human comments (the ~3,000 downloaded CSV comments) are also rescored under agency_only.
 
@@ -151,6 +153,10 @@ def main():
     for row in ai_rows.itertuples():
         text = raw_text[row.file]
         jobs.append((row.file, "ai_same_day", text, row.policy_id, contexts.get(row.policy_id, "")))
+        # Parity condition: 188 Statt rows were originally sent a docket-like ID inferred from the letter text,
+        # so send every AI comment the agency name from its source file, like Gemini and the human rescoring.
+        agency = re.match(r"csv:([a-z]+)_", row.file).group(1).upper()
+        jobs.append((row.file, "ai_agency_only", text, agency, None))
 
     done = set()
     if OUTPUT_JSONL.exists():

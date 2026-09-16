@@ -109,9 +109,16 @@ CAP_SOURCE_LABELS = None
 ## Context-Parity Rescoring
 Statt and Gemini comments were generated from agency-level personas with no specific docket, so the evaluator only saw an agency name for them, while Round 1 human comments were originally scored with their exact docket and rule summary. `rescore_context_sensitivity.py` rescores:
 - the 298 Round 1 human comments with agency-only information (`agency_only`) and with the original setup (`full_context`, a test-retest control);
-- all Statt and Gemini comments with their original inputs (`ai_same_day`), so Round 1 sources come from one run.
+- all Statt and Gemini comments with their original inputs (`ai_same_day`), so Round 1 sources come from one run;
+- all Statt and Gemini comments with only the agency name from their source file (`ai_agency_only`). The original inputs sent 188 Statt comments a docket-like ID taken from the letter text;
+- the 2,997 Round 2 human comments with agency-only information (`agency_only`).
 
-Results are written to `comment_scores_context_sensitivity.jsonl` / `.csv`. `comment_analysis.ipynb` uses the `agency_only` + `ai_same_day` scores for Round 1 by default (`USE_CONTEXT_PARITY_SCORES`) and compares all scenarios in its final section.
+Results are written to `comment_scores_context_sensitivity.jsonl` / `.csv`. `comment_analysis.ipynb` uses the `agency_only` + `ai_agency_only` scores by default (`USE_CONTEXT_PARITY_SCORES`), so every comment is scored with only its agency name, and compares all scenarios in its final section.
+
+## Reproducibility
+- `requirements.txt` pins the library versions used for the published numbers (Python 3.12.3).
+- `balanced_sample_files.csv` freezes the 894-comment agency-balanced sample (file list and order) used by every regression and topic model. Delete it only if you intend to draw a new sample.
+- `topic_theme_audit_sample.csv` holds a 150-clause spot check of the v2 theme assignments (10 per theme). The current `fits_theme` labels are a first pass by Claude and still need human verification; the notebook reports precision from this file.
 
 ## Analysis
 - `comment_analysis.ipynb` compares scores by `source_label` and runs BERTopic per rationale field.
