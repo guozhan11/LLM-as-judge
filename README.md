@@ -106,6 +106,13 @@ CAP_SOURCE_LABELS = None
 - `comment_scores.jsonl` (one JSON per comment)
 - `comment_scores.csv` (flat table for analysis)
 
+## Context-Parity Rescoring
+Statt and Gemini comments were generated from agency-level personas with no specific docket, so the evaluator only saw an agency name for them, while Round 1 human comments were originally scored with their exact docket and rule summary. `rescore_context_sensitivity.py` rescores:
+- the 298 Round 1 human comments with agency-only information (`agency_only`) and with the original setup (`full_context`, a test-retest control);
+- all Statt and Gemini comments with their original inputs (`ai_same_day`), so Round 1 sources come from one run.
+
+Results are written to `comment_scores_context_sensitivity.jsonl` / `.csv`. `comment_analysis.ipynb` uses the `agency_only` + `ai_same_day` scores for Round 1 by default (`USE_CONTEXT_PARITY_SCORES`) and compares all scenarios in its final section.
+
 ## Analysis
 - `comment_analysis.ipynb` compares scores by `source_label` and runs BERTopic per rationale field.
 - The "Topic Modeling v2" section is the recommended topic analysis. Human, Statt, and Gemini comments cover different dockets, so the earlier document-level topics mostly separate dockets. v2 splits evaluator rationales into clauses, masks docket-specific words, separates praise from criticism, fits BERTopic on the agency-balanced Round 1 sample, and writes `images/topic_modeling_evaluator_themes.png`.
