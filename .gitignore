@@ -13,5 +13,5 @@ __pycache__/
 .Rhistory
 .RData
 
-# Local-only unpublished draft
-/reports/TPP Blog Post - Fine Tuning Works v4.docx
+# Local-only reports and drafts
+/reports/

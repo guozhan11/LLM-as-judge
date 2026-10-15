@@ -8,8 +8,6 @@ The project's findings were published on Georgetown University's McCourt School 
 
 **[Fine-Tuning Works: What Specialized AI Can Teach Us About Regulatory Comments](https://mccourt.georgetown.edu/research-centers/fine-tuning-works-what-specialized-ai-can-teach-us-about-regulatory-comments/)** — Nora Guo Zhan, Tech & Public Policy.
 
-Local materials: [evaluation memo (PDF)](reports/LLM-Evaluation%20Memo.pdf) and [editable memo (Word)](reports/LLM-Evaluation%20Memo.docx).
-
 ## Project layout
 
 ```text
@@ -24,8 +22,7 @@ LLM-eval/
 │   └── samples/        # Frozen balanced sample and theme audit
 ├── comments/           # Evaluator-ready comments
 ├── comments_original/  # Original Regulations.gov bulk downloads
-├── images/             # Analysis figures
-└── reports/            # Evaluation memo (PDF and Word)
+└── images/             # Analysis figures
 ```
 
 The comment directories retain their existing locations to preserve file identifiers used by saved scores and frozen samples. Existing data and notebook outputs are retained.
