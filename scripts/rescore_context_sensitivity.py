@@ -14,7 +14,7 @@ comments (and the 633 AI comments) and writes them to separate files (the origin
 
 Round 2 human comments (the ~3,000 downloaded CSV comments) are also rescored under agency_only.
 
-Usage: python rescore_context_sensitivity.py
+Usage: python scripts/rescore_context_sensitivity.py
 """
 import json
 import os
@@ -28,9 +28,9 @@ from dotenv import load_dotenv
 from jsonschema import Draft7Validator
 from openai import OpenAI
 
-BASE_DIR = Path(__file__).parent
-OUTPUT_JSONL = BASE_DIR / "comment_scores_context_sensitivity.jsonl"
-OUTPUT_CSV = BASE_DIR / "comment_scores_context_sensitivity.csv"
+BASE_DIR = Path(__file__).resolve().parents[1]
+OUTPUT_JSONL = BASE_DIR / "data" / "results" / "comment_scores_context_sensitivity.jsonl"
+OUTPUT_CSV = BASE_DIR / "data" / "results" / "comment_scores_context_sensitivity.csv"
 MODEL = "gpt-5.4-mini"
 TEMPERATURE = 0.2
 MAX_TOKENS = 1000
@@ -103,8 +103,8 @@ def extract_json(text):
 
 
 def load_policy_contexts():
-    contexts = json.loads((BASE_DIR / "policy_contexts.json").read_text(encoding="utf-8"))
-    for html_path in sorted((BASE_DIR / "policy_context_html").glob("*.html")):
+    contexts = json.loads((BASE_DIR / "data" / "context" / "policy_contexts.json").read_text(encoding="utf-8"))
+    for html_path in sorted((BASE_DIR / "data" / "context" / "policy_context_html").glob("*.html")):
         policy_id = re.search(r"\bFDA-\d{4}-[A-Z]-\d{4}\b|\bEPA-[A-Z]{2}-[A-Z]{2}-\d{4}-\d{4}\b|\bFMCSA-\d{4}-\d{4}\b", html_path.name)
         if policy_id and not contexts.get(policy_id.group(0)):
             raw = html_path.read_text(encoding="utf-8", errors="ignore")
@@ -126,13 +126,13 @@ def main():
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     contexts = load_policy_contexts()
 
-    scores = pd.read_csv(BASE_DIR / "comment_scores.csv")
+    scores = pd.read_csv(BASE_DIR / "data" / "results" / "comment_scores.csv")
     round1_human = scores[
         scores["source_label"].str.lower().eq("human") & ~scores["file"].str.startswith("csv:", na=False)
     ]
     # The CSV collapses line breaks; the JSONL keeps the exact text that was originally sent.
     raw_text = {}
-    for line in (BASE_DIR / "comment_scores.jsonl").read_text(encoding="utf-8").splitlines():
+    for line in (BASE_DIR / "data" / "results" / "comment_scores.jsonl").read_text(encoding="utf-8").splitlines():
         rec = json.loads(line)
         if rec.get("comment_text"):
             raw_text[rec["file"]] = rec["comment_text"]

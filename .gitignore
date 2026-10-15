@@ -1,1 +1,17 @@
+# Local credentials and environments
 .env
+.env.*
+!.env.example
+.venv/
+venv/
+
+# OS, Python, and notebook session files
+.DS_Store
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.Rhistory
+.RData
+
+# Local-only unpublished draft
+/reports/TPP Blog Post - Fine Tuning Works v4.docx
