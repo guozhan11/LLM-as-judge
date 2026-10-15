@@ -25,7 +25,7 @@ LLM-eval/
 └── images/             # Analysis figures
 ```
 
-The comment directories retain their existing locations to preserve file identifiers used by saved scores and frozen samples. Existing data and notebook outputs are retained.
+JSON comment identifiers use project-relative paths such as `comments/<id>.json`; CSV record identifiers remain unchanged. Readers also normalize legacy absolute comment paths, so saved scores, rescoring checkpoints, and frozen samples remain compatible when the project is moved. Existing scores and notebook outputs are retained.
 
 ## What this does
 - Loads comment JSON files and CSV files from the `comments/` folder.

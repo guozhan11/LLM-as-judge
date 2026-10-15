@@ -23,6 +23,8 @@ import textwrap
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+from project_paths import normalize_comment_id
+
 import pandas as pd
 from dotenv import load_dotenv
 from jsonschema import Draft7Validator
@@ -127,6 +129,7 @@ def main():
     contexts = load_policy_contexts()
 
     scores = pd.read_csv(BASE_DIR / "data" / "results" / "comment_scores.csv")
+    scores["file"] = scores["file"].map(normalize_comment_id)
     round1_human = scores[
         scores["source_label"].str.lower().eq("human") & ~scores["file"].str.startswith("csv:", na=False)
     ]
@@ -135,7 +138,7 @@ def main():
     for line in (BASE_DIR / "data" / "results" / "comment_scores.jsonl").read_text(encoding="utf-8").splitlines():
         rec = json.loads(line)
         if rec.get("comment_text"):
-            raw_text[rec["file"]] = rec["comment_text"]
+            raw_text[normalize_comment_id(rec["file"])] = rec["comment_text"]
     jobs = []
     for row in round1_human.itertuples():
         agency = row.policy_id.split("-")[0].upper()
@@ -163,7 +166,7 @@ def main():
         for line in OUTPUT_JSONL.read_text(encoding="utf-8").splitlines():
             rec = json.loads(line)
             if "scores" in rec:
-                done.add((rec["file"], rec["condition"]))
+                done.add((normalize_comment_id(rec["file"]), rec["condition"]))
     jobs = [j for j in jobs if (j[0], j[1]) not in done]
     print(f"{len(round1_human)} Round 1 human + {len(round2_human)} Round 2 human + {len(ai_rows)} AI comments; {len(jobs)} evaluations to run")
 
@@ -196,7 +199,7 @@ def main():
     rows = []
     for line in OUTPUT_JSONL.read_text(encoding="utf-8").splitlines():
         rec = json.loads(line)
-        flat = {"file": rec["file"], "condition": rec["condition"], "policy_id_sent": rec["policy_id_sent"],
+        flat = {"file": normalize_comment_id(rec["file"]), "condition": rec["condition"], "policy_id_sent": rec["policy_id_sent"],
                 "overall_summary": rec["overall_summary"]}
         flat.update({f"score_{k}": v for k, v in rec["scores"].items()})
         flat.update({f"rationale_{k}": " ".join(v.split()) for k, v in rec["rationales"].items()})
